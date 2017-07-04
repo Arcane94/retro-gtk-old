@@ -39,6 +39,7 @@ libretro_gtk_la_SOURCES = \
 	input/keyboard.vala \
 	input/keyboard-state.vala \
 	input/mouse.vala \
+	input/pointer.vala \
 	input/virtual-gamepad.vala \
 	\
 	loop/main-loop.vala \

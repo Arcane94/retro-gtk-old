@@ -214,7 +214,7 @@ public class Core : Object {
 	private extern void set_callbacks ();
 
 	internal Module module;
-	internal Variables variables_interface;
+	internal Options variables_interface;
 
 	internal float aspect_ratio;
 	internal bool overscan;
@@ -418,6 +418,17 @@ public class Core : Object {
 
 		// TODO Handle the key event.
 	}
+
+	public string get_variables_interface (string core_variable) {
+
+		return variables_interface.get_variable(core_variable);
+	}
+
+	public void set_variables_interface (string key, string val) {
+
+		variables_interface.set_option(key, val);
+    }
+
 
 	private extern void set_system_av_info (SystemAvInfo system_av_info);
 }
