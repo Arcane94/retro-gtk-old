@@ -138,7 +138,7 @@ public class Core : Object {
 	/**
 	 * Whether or not the a game is loaded.
 	 */
-	public bool game_loaded { private set; get; default = false; }
+	public bool game_loaded { internal set; get; default = false; }
 
 	/**
 	 * Whether or not the core supports games.
@@ -155,7 +155,7 @@ public class Core : Object {
 	 *
 	 * The Core can set it to let the frontend insert and eject disks images.
 	 */
-	public DiskControl disk_control_interface { internal set; get; }
+	internal DiskControl disk_control_interface { set; get; }
 
 	private weak Input _input_interface;
 	private ulong input_controller_connected_id;
@@ -216,11 +216,7 @@ public class Core : Object {
 	internal Module module;
 	internal Options variables_interface;
 
-	internal float aspect_ratio;
-	internal bool overscan;
-	internal PixelFormat pixel_format;
-	internal Rotation rotation;
-	internal double sample_rate;
+	internal void *environment_internal;
 
 	/**
 	 * Creates a Core from the file name of a Libretro implementation.
@@ -235,6 +231,8 @@ public class Core : Object {
 	}
 
 	construct {
+		environment_internal_setup ();
+
 		libretro_path = File.new_for_path (file_name).resolve_relative_path ("").get_path ();
 
 		module = new Module (libretro_path);
@@ -248,6 +246,8 @@ public class Core : Object {
 			module.unload_game ();
 		module.deinit ();
 		pop_cb_data ();
+
+		environment_internal_release ();
 	}
 
 	/**
@@ -264,28 +264,27 @@ public class Core : Object {
 		init_input ();
 
 		is_initiated = true;
+
+		try {
+			load_medias ();
+		}
+		catch (Error e) {
+			debug (e.message);
+		}
 	}
 
-	/**
-	 * Sets device to be used for player 'port'.
-	 *
-	 * @param port the port on wich to connect a device
-	 * @param device the type of the device connected
-	 */
-	public void set_controller_port_device (uint port, DeviceType device) {
-		push_cb_data ();
-		module.set_controller_port_device (port, device);
-		pop_cb_data ();
-	}
+	public extern void set_medias ([CCode (array_null_terminated = true, array_length = false)] string[] uris);
+
+	public extern void set_current_media (uint media_index) throws Error;
+
+	private extern void load_medias () throws Error;
+
+	public extern void set_controller_port_device (uint port, DeviceType device);
 
 	/**
 	 * Resets the current game.
 	 */
-	public void reset () {
-		push_cb_data ();
-		module.reset ();
-		pop_cb_data ();
-	}
+	public extern void reset ();
 
 	/**
 	 * Runs the game for one video frame.
@@ -301,11 +300,7 @@ public class Core : Object {
 	 * frame if the can_dupe property of {@link video_interface} is set to true.
 	 * In this case, the video callback can take a null argument for data.
 	 */
-	public void run () {
-		push_cb_data ();
-		module.run ();
-		pop_cb_data ();
-	}
+	public extern void run ();
 
 	public extern bool supports_serialization ();
 
@@ -320,22 +315,7 @@ public class Core : Object {
 	 * @param game information to load the game
 	 * @return false if the loading failed, true otherwise
 	 */
-	public bool load_game (GameInfo game) {
-		if (game_loaded) {
-			push_cb_data ();
-			module.unload_game ();
-			pop_cb_data ();
-		}
-
-		push_cb_data ();
-		game_loaded = module.load_game (game);
-		SystemAvInfo info;
-		module.get_system_av_info (out info);
-		set_system_av_info (info);
-		pop_cb_data ();
-
-		return game_loaded;
-	}
+	private extern bool load_game (GameInfo game);
 
 	/**
 	 * Prepare the standalone core.
@@ -344,16 +324,7 @@ public class Core : Object {
 	 *
 	 * @return false if the preparation failed, true otherwise
 	 */
-	public bool prepare () {
-		push_cb_data ();
-		game_loaded = module.load_game (null);
-		SystemAvInfo info;
-		module.get_system_av_info (out info);
-		set_system_av_info (info);
-		pop_cb_data ();
-
-		return game_loaded;
-	}
+	private extern bool prepare ();
 
 	/**
 	 * Gets the size of a region of memory.
@@ -361,13 +332,7 @@ public class Core : Object {
 	 * @param id the region of memory
 	 * @return the size of the region of memory
 	 */
-	public size_t get_memory_size (MemoryType id) {
-		push_cb_data ();
-		var result = module.get_memory_size (id);
-		pop_cb_data ();
-
-		return result;
-	}
+	public extern size_t get_memory_size (MemoryType id);
 
 	/**
 	 * Gets a region of memory.
@@ -385,39 +350,10 @@ public class Core : Object {
 	 */
 	public extern void set_memory (MemoryType id, uint8[] data);
 
-	private void init_input () {
-		if (input_interface == null)
-			return;
-
-		input_interface.foreach_controller (init_controller_device);
-	}
-
-	private void init_controller_device (uint port, InputDevice device) {
-		var device_type = device.get_device_type ();
-		set_controller_port_device (port, device_type);
-	}
-
-	private void on_input_controller_connected (uint port, InputDevice device) {
-		if (!is_initiated)
-			return;
-
-		var device_type = device.get_device_type ();
-		set_controller_port_device (port, device_type);
-	}
-
-	private void on_input_controller_disconnected (uint port) {
-		if (!is_initiated)
-			return;
-
-		set_controller_port_device (port, DeviceType.NONE);
-	}
-
-	private void on_input_key_event (bool down, KeyboardKey keycode, uint32 character, KeyboardModifierKey key_modifiers) {
-		if (!is_initiated)
-			return;
-
-		// TODO Handle the key event.
-	}
+	private extern void init_input ();
+	private extern void on_input_controller_connected (uint port, InputDevice device);
+	private extern void on_input_controller_disconnected (uint port);
+	private extern void on_input_key_event (bool down, KeyboardKey keycode, uint32 character, KeyboardModifierKey key_modifiers);
 
 	public string get_variables_interface (string core_variable) {
 
@@ -431,6 +367,9 @@ public class Core : Object {
 
 
 	private extern void set_system_av_info (SystemAvInfo system_av_info);
+
+	private extern void environment_internal_setup ();
+	private extern void environment_internal_release ();
 }
 
 }
