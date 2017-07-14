@@ -60,7 +60,7 @@ public class Retro.Pointer : Object, InputDevice {
 				y_delta = 0;
 				return result;
 			case PointerId.PRESSED:
-				return get_button_state (0) ? int16.MAX : 0;
+				return get_button_state (1) ? int16.MAX : 0;
 			default:
 				return 0;
 		}
