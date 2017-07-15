@@ -75,10 +75,10 @@ public class Retro.Pointer : Object, InputDevice {
 	}
 
 	private bool on_button_press_event (Gtk.Widget source, Gdk.EventButton event) {
-		if (!parse) {
+		/*if (!parse) {
 			grab (event.device, event.window, event.time);
 			return false;
-		}
+		}*/
 
 		if (button_state.contains (event.button)) {
 			button_state.replace (event.button, true);
@@ -128,7 +128,7 @@ public class Retro.Pointer : Object, InputDevice {
 
 	/**
 	 * Grab the poiner
-	 */
+	 *//*
 	private void grab (Gdk.Device device, Gdk.Window window, uint32 time) {
 		// Save the pointer's position
 		Gdk.Screen screen;
@@ -151,5 +151,5 @@ public class Retro.Pointer : Object, InputDevice {
 				disconnect (ungrab_id);
 			}
 		});
-	}
+	}*/
 }
