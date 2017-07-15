@@ -91,9 +91,9 @@ public class Retro.Pointer : Object, InputDevice {
 	}
 
 	private bool on_button_release_event (Gtk.Widget source, Gdk.EventButton event) {
-		if (button_state.contains (event.button)) {
-			button_state.replace (event.button, false);
-		}
+		//if (button_state.contains (event.button)) {
+			//button_state.replace (event.button, false);
+		//}
 
 		return false;
 	}
