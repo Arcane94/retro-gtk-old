@@ -80,6 +80,8 @@ public class Retro.Pointer : Object, InputDevice {
 			return false;
 		}*/
 
+		message("%u",event.button);
+
 		if (button_state.contains (event.button)) {
 			button_state.replace (event.button, true);
 		}
