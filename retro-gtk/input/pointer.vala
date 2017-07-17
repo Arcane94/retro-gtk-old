@@ -83,9 +83,11 @@ public class Retro.Pointer : Object, InputDevice {
 		message("on button press: %u",event.button);
 
 		if (button_state.contains (event.button)) {
+			message("contains: %u",event.button);
 			button_state.replace (event.button, true);
 		}
 		else  {
+			message("doesn't contain: %u",event.button);
 			button_state.insert (event.button, true);
 		}
 
