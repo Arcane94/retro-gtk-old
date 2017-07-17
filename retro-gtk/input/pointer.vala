@@ -80,7 +80,7 @@ public class Retro.Pointer : Object, InputDevice {
 			return false;
 		}*/
 
-		message("%u",event.button);
+		message("on button press: %u",event.button);
 
 		if (button_state.contains (event.button)) {
 			button_state.replace (event.button, true);
@@ -93,6 +93,7 @@ public class Retro.Pointer : Object, InputDevice {
 	}
 
 	private bool on_button_release_event (Gtk.Widget source, Gdk.EventButton event) {
+		message("on button release: %u",event.button);
 		if (button_state.contains (event.button)) {
 			button_state.replace (event.button, false);
 		}
