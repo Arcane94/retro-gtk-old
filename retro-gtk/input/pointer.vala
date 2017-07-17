@@ -60,7 +60,7 @@ public class Retro.Pointer : Object, InputDevice {
 				y_delta = 0;
 				return result;
 			case PointerId.PRESSED:
-				message("Returned button state: %u",get_button_state (1) ? 1: 0);
+				message("Returned button state from pointer: %u",get_button_state (1) ? 1: 0);
 				return get_button_state (1) ? 1 : 0;
 			default:
 				return 0;
@@ -84,11 +84,11 @@ public class Retro.Pointer : Object, InputDevice {
 		message("on button press: %u",event.button);
 
 		if (button_state.contains (event.button)) {
-			message("contains: %u",event.button);
+			//message("contains: %u",event.button);
 			button_state.replace (event.button, true);
 		}
 		else  {
-			message("doesn't contain: %u",event.button);
+			//message("doesn't contain: %u",event.button);
 			button_state.insert (event.button, true);
 		}
 
