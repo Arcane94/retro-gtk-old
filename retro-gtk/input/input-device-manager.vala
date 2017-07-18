@@ -17,14 +17,16 @@ public class InputDeviceManager : Object, Input {
 
 	private int16 get_state (uint port, DeviceType device, uint index, uint id) {
 
-		message("port %u, index %u, id %u",port,index,id);
 		if (controller_devices.contains (port)) {
 			var controller_device = controller_devices.lookup (port);
 			if (controller_device != null) {
 				var capabilities = controller_device.get_device_capabilities ();
 				bool is_capable = (capabilities & (1 << device)) != 0;
 				if (is_capable) {
-				if (controller_device.get_input_state (device, index, id) == 1) message("returned state: %d",1);
+				if (controller_device.get_input_state (device, index, id) == 1) {
+					message("port %u, index %u, id %u",port,index,id);
+					message("returned state: %d",1);
+					}
 				return controller_device.get_input_state (device, index, id);
 				}
 			}
