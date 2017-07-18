@@ -60,8 +60,8 @@ public class Retro.Pointer : Object, InputDevice {
 				y_delta = 0;
 				return result;
 			case PointerId.PRESSED:
-				message("Returned button state from pointer: %u",get_button_state (1) ? 1: 0);
-				return get_button_state (1) ? 1 : 0;
+				message("Returned button state from pointer: %u",get_button_state (1) ? int16.MAX: 0);
+				return get_button_state (1) ? int16.MAX : 0;
 			default:
 				return 0;
 		}
