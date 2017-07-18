@@ -24,7 +24,7 @@ public class InputDeviceManager : Object, Input {
 				var capabilities = controller_device.get_device_capabilities ();
 				bool is_capable = (capabilities & (1 << device)) != 0;
 				if (is_capable) {
-				message("returned state: %d",controller_device.get_input_state (device, index, id));
+				if (controller_device.get_input_state (device, index, id) == 1) message("returned state: %d",1);
 				return controller_device.get_input_state (device, index, id);
 				}
 			}
