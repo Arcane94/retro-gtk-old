@@ -53,11 +53,11 @@ public class Retro.Pointer : Object, InputDevice {
 		switch ((PointerId) id) {
 			case PointerId.X:
 				int16 result = x_delta;
-				x_delta = 0;
+				//x_delta = 0;
 				return result;
 			case PointerId.Y:
 				int16 result = y_delta;
-				y_delta = 0;
+				//y_delta = 0;
 				return result;
 			case PointerId.PRESSED:
 				//message("Returned button state from pointer: %u",get_button_state (1) ? 1: 0);
