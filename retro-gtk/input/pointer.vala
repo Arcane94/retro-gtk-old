@@ -53,11 +53,11 @@ public class Retro.Pointer : Object, InputDevice {
 		switch ((PointerId) id) {
 			case PointerId.X:
 				int16 result = x_delta;
-				//x_delta = 0;
+				x_delta = 0;
 				return result;
 			case PointerId.Y:
 				int16 result = y_delta;
-				//y_delta = 0;
+				y_delta = 0;
 				return result;
 			case PointerId.PRESSED:
 				//message("Returned button state from pointer: %u",get_button_state (1) ? 1: 0);
@@ -140,18 +140,15 @@ public class Retro.Pointer : Object, InputDevice {
 		Gdk.Screen screen;
 		int x, y;
 		device.get_position (out screen, out x, out y);
-
 		// Grab the device
 		parse = true;
 		var cursor = new Gdk.Cursor (Gdk.CursorType.BLANK_CURSOR);
 		device.grab (window, Gdk.GrabOwnership.NONE, false, Gdk.EventMask.ALL_EVENTS_MASK, cursor, time);
-
 		// Ungrab the device when asked
 		ungrab_id = ungrab.connect ((time) => {
 			if (parse) {
 				parse = false;
 				device.ungrab (time);
-
 				// Restore the pointer's position
 				device.warp (screen, x, y);
 				disconnect (ungrab_id);
