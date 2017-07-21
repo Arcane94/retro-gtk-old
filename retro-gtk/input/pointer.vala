@@ -54,10 +54,12 @@ public class Retro.Pointer : Object, InputDevice {
 			case PointerId.X:
 				int16 result = x_delta;
 				x_delta = 0;
+				//message("X coordinate : %d", result);
 				return result;
 			case PointerId.Y:
 				int16 result = y_delta;
 				y_delta = 0;
+				//message("Y coordinate : %d", result);
 				return result;
 			case PointerId.PRESSED:
 				//message("Returned button state from pointer: %u",get_button_state (1) ? 1: 0);
@@ -108,12 +110,14 @@ public class Retro.Pointer : Object, InputDevice {
 	 * Update the pointer's position
 	 */
 	private bool on_motion_notify_event (Gtk.Widget source, Gdk.EventMotion event) {
-		if (!parse) return false;
+		//if (!parse) return false;
+
 
 		int x, y;
 		if (parser.parse_event (event, out x, out y)) {
 			x_delta += (int16) x;
 			y_delta += (int16) y;
+			//message("X,Y coordinates : %d %d", x_delta,y_delta);
 		}
 
 		return false;
