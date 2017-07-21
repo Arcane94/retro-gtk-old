@@ -53,12 +53,12 @@ public class Retro.Pointer : Object, InputDevice {
 		switch ((PointerId) id) {
 			case PointerId.X:
 				int16 result = x_delta;
-				x_delta = 0;
+				//x_delta = 0;
 				//message("X coordinate : %d", result);
 				return result;
 			case PointerId.Y:
 				int16 result = y_delta;
-				y_delta = 0;
+				//y_delta = 0;
 				//message("Y coordinate : %d", result);
 				return result;
 			case PointerId.PRESSED:
