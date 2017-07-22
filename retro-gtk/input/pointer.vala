@@ -1,15 +1,51 @@
 // This file is part of retro-gtk. License: GPLv3
 
+private class Retro.PositionParser : Object {
+	private Gdk.Screen screen;
+
+	private int x_last;
+	private int y_last;
+
+	/*
+	 * Return wether a movement happened or not
+	 */
+	public bool parse_event (Gdk.EventMotion event, out int x_movement, out int y_movement) {
+		var device = event.device;
+
+		Gdk.Screen s;
+		int x, y;
+		device.get_position (out s, out x, out y);
+
+		if (s != screen) {
+			screen = s;
+			x_movement = x;
+			y_movement = y;
+			x_last = x;
+			y_last = y;
+
+			return false;
+		}
+
+		screen = s;
+
+		x_movement = x - x_last;
+		y_movement = y - y_last;
+
+		if (x_movement == 0 && y_movement == 0) return false;
+
+		// Motion hapened: the pointer may be warped
+		x_last = x;
+		y_last = y;
+
+		return true;
+	}
+}
+
 public class Retro.Pointer : Object, InputDevice {
 	public Gtk.Widget widget { get; construct; }
 
-	public bool parse {
-		get { return parser.grab_pointer; }
-		set { parser.grab_pointer = value; }
-	}
-
 	private HashTable<uint?, bool?> button_state;
-	private MotionParser parser;
+	private PositionParser parser;
 	private int16 x_delta;
 	private int16 y_delta;
 
@@ -20,7 +56,7 @@ public class Retro.Pointer : Object, InputDevice {
 	}
 
 	construct {
-		parser = new MotionParser ();
+		parser = new PositionParser ();
 
 		widget.button_press_event.connect (on_button_press_event);
 		widget.motion_notify_event.connect (on_motion_notify_event);
