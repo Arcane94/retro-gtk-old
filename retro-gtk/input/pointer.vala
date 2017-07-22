@@ -9,17 +9,20 @@ private class Retro.PositionParser : Object {
 	/*
 	 * Return wether a movement happened or not
 	 */
-	public bool parse_event (Gdk.EventMotion event, out int x_movement, out int y_movement) {
+	public bool parse_event (Gdk.EventMotion event, out int x_position, out int y_position) {
 		var device = event.device;
 
 		Gdk.Screen s;
 		int x, y;
 		device.get_position (out s, out x, out y);
 
+		int x_width = s.get_width();
+		int y_height = s.get_height();
+
 		if (s != screen) {
 			screen = s;
-			x_movement = x;
-			y_movement = y;
+			x_position = x;
+			y_position = y;
 			x_last = x;
 			y_last = y;
 
@@ -28,10 +31,10 @@ private class Retro.PositionParser : Object {
 
 		screen = s;
 
-		x_movement = x - x_last;
-		y_movement = y - y_last;
+		x_position = x - x_last;
+		y_position = y - y_last;
 
-		if (x_movement == 0 && y_movement == 0) return false;
+		if (x_position == 0 && y_position == 0) return false;
 
 		// Motion hapened: the pointer may be warped
 		x_last = x;
@@ -89,12 +92,12 @@ public class Retro.Pointer : Object, InputDevice {
 		switch ((PointerId) id) {
 			case PointerId.X:
 				int16 result = x_delta;
-				//x_delta = 0;
+				x_delta = 0;
 				//message("X coordinate : %d", result);
 				return result;
 			case PointerId.Y:
 				int16 result = y_delta;
-				//y_delta = 0;
+				y_delta = 0;
 				//message("Y coordinate : %d", result);
 				return result;
 			case PointerId.PRESSED:
@@ -151,8 +154,8 @@ public class Retro.Pointer : Object, InputDevice {
 
 		int x, y;
 		if (parser.parse_event (event, out x, out y)) {
-			x_delta += (int16) x;
-			y_delta += (int16) y;
+			x_delta = (int16) x;
+			y_delta = (int16) y;
 			//message("X,Y coordinates : %d %d", x_delta,y_delta);
 		}
 
