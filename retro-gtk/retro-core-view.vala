@@ -4,8 +4,7 @@ public class Retro.CoreView : Gtk.EventBox {
 	private Core core;
 	private CairoDisplay display;
 	private InputDeviceManager input;
-	private Keyboard keyboard;
-	private Mouse mouse;
+	private Keyboard keyboard;	
 	private Pointer pointer;
 
 	construct {
@@ -17,8 +16,7 @@ public class Retro.CoreView : Gtk.EventBox {
 		add (display);
 
 		input = new InputDeviceManager ();
-		keyboard = new Keyboard (this);
-		mouse = new Mouse (this);
+		keyboard = new Keyboard (this);		
 		pointer = new Pointer(this);
 
 		input.set_keyboard (keyboard);
