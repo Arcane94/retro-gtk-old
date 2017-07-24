@@ -367,9 +367,9 @@ public class Core : Object {
 	
 	public bool is_valid(string key, string val) {
 		if (variables_interface.contains(key)) {
-			var possible_values = variables_interface.lookup_values(val);
+			string[] possible_values = variables_interface.lookup_values(val);
 
-			foreach (var element in possible_values) {
+			foreach (string element in possible_values) {
 				if (element == val) return true;
 			}
 		}
