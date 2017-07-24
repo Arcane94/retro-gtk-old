@@ -364,7 +364,18 @@ public class Core : Object {
 
 		variables_interface.set_option(key, val);
     }
+	
+	public bool is_valid(string key, string val) {
+		if (variables_interface.contains(key)) {
+			var possible_values = variables_interface.lookup_values(val);
 
+			foreach (var element in possible_values) {
+				if (element == val) return true;
+			}
+		}
+
+		return false;
+	}
 
 	private extern void set_system_av_info (SystemAvInfo system_av_info);
 
